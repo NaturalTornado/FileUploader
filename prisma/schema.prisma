@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user_messages {
+  message_id    Int       @id @default(autoincrement())
+  username      String?   @db.VarChar(50)
+  message_title String    @db.VarChar(100)
+  message       String
+  timestamp     DateTime? @default(now()) @db.Timestamp(6)
+  users         users?    @relation(fields: [username], references: [username], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  id            Int             @id @default(autoincrement())
+  username      String?         @unique(map: "unique_username") @db.VarChar(255)
+  password      String?         @db.VarChar(255)
+  user_type     String?         @default("user") @db.VarChar(20)
+  user_messages user_messages[]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model messages {
+  id            Int      @id @default(autoincrement())
+  message_title String   @db.VarChar(100)
+  message       String   @db.Text
+  timestamp     DateTime @default(now())
+  username      String?  @db.VarChar(50) // Optional for anonymous messages
+}

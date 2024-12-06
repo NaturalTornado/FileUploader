@@ -1,0 +1,39 @@
+<h1>Folder: <%= folderPath %></h1>
+
+<h2>Subfolders</h2>
+<ul>
+  <% if (subfolders && subfolders.length > 0) { %>
+    <% subfolders.forEach((subfolder) => { %>
+      <li>
+        <a href="/folder/<%= folderPath %>/<%= subfolder %>"><%= subfolder %></a>
+      </li>
+    <% }); %>
+  <% } else { %>
+    <li>No subfolders found.</li>
+  <% } %>
+</ul>
+
+<h2>Files</h2>
+<ul>
+  <% if (files && files.length > 0) { %>
+    <% files.forEach((file) => { %>
+      <li><%= file %></li>
+    <% }); %>
+  <% } else { %>
+    <li>No files in this folder.</li>
+  <% } %>
+</ul>
+
+<h2>Upload File</h2>
+<form action="/folder/<%= folderPath %>/upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="file" required />
+  <button type="submit">Upload</button>
+</form>
+
+<h2>Create Subfolder</h2>
+<form action="/folder/<%= folderPath %>/create" method="POST">
+  <input type="text" name="folderName" placeholder="Enter subfolder name" required />
+  <button type="submit">Create Subfolder</button>
+</form>
+
+<a href="/">Back to Home</a>

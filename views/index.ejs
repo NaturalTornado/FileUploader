@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+  
+    li {
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+  
+    li:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+  </style>
+  
+  <title>Blog Publisher View</title>
+</head>
+<body>
+  <% if (locals.user) { %>
+    <h1>Welcome back to your blog!</h1>
+    <a href="/log-out">Log Out</a>
+
+    <!-- Display user messages -->
+    <h2>Messages</h2>
+    <ul>
+      <% messages.forEach((msg) => { %>
+        <li onclick="/message/:msg.message_title">
+          <strong><%= msg.message_title %></strong><br>
+          <% if (user.user_type === 'member') { %>
+            <em>By: <%= msg.username %></em><br>
+          <% } else { %>
+            <em>By: Anonymous</em><br>
+          <% } %>
+          <p><%= msg.message %></p>
+          <small><%= msg.timestamp %></small>
+        </li>
+      <% }); %>
+    </ul>
+
+    <!-- Form to Add a New Message -->
+    <div>
+      <h3>Add a New Message</h3>
+      <form action="/new-message" method="POST">
+        <label for="newMessageTitle">New Message Title</label>
+        <input type="text" id="newMessageTitle" name="newMessageTitle" required />
+
+        <label for="newMessage">Message Content</label>
+        <textarea id="newMessage" name="newMessage" required></textarea>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <!-- Button to become a member for users with 'user' user_type -->
+    <% if (user.user_type === 'user') { %>
+      <form action="/become-a-member" method="POST">
+        <h3>Become a Member</h3>
+        <label for="membershipPasscode">Enter the secret passcode:</label>
+        <input id="membershipPasscode" name="membershipPasscode" type="password" required />
+        <button>Submit</button>
+      </form>
+    <% } %>
+  <% } else { %>
+    <h1>Please log in</h1>
+    <form action="/log-in" method="POST">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" required />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required />
+      <button>Log In</button>
+    </form>
+    <a href="/sign-up">Sign Up Form</a>
+  <% } %>
+
+<!-- Folder Creation Form -->
+<form action="/create-folder" method="POST">
+  <label for="folderName">Create a New Folder:</label>
+  <input type="text" id="folderName" name="folderName" placeholder="Enter folder name" required>
+  <button type="submit">Create Folder</button>
+</form>
+
+<h3>Uploaded Folders</h3>
+<ul>
+  <% if (folders && folders.length > 0) { %>
+    <% folders.forEach((folder) => { %>
+      <li>
+        <strong><%= folder %></strong>
+
+        <!-- Display files in the folder -->
+        <ul>
+          <% const folderFiles = rootFiles[folder] || []; %>
+          <% if (folderFiles.length > 0) { %>
+            <% folderFiles.forEach((file) => { %>
+              <li><%= file %></li>
+            <% }); %>
+          <% } else { %>
+            <li>No files in this folder.</li>
+          <% } %>
+        </ul>
+
+        <!-- Upload button for the folder -->
+        <form action="/folder/<%= folder %>/upload" method="POST" enctype="multipart/form-data">
+          <input type="file" name="file" required />
+          <button type="submit">Upload to <%= folder %></button>
+        </form>
+      </li>
+    <% }); %>
+  <% } else { %>
+    <li>No folders found.</li>
+  <% } %>
+</ul>
+
+
+<a href="/upload">Upload</a>
+</body>
+</html>

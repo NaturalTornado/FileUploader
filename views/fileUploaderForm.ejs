@@ -1,0 +1,23 @@
+<!-- fileUploaderForm.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Uploader</title>
+</head>
+<body>
+  <h1>Upload a File</h1>
+
+  <!-- Form to upload a file -->
+  <form action="/upload" method="POST" enctype="multipart/form-data">
+    <label for="file">Choose a file:</label>
+    <input type="file" name="file" id="file" required />
+
+    <label for="description">File Description:</label>
+    <input type="text" name="description" id="description" placeholder="Enter a description" />
+
+    <button type="submit">Upload</button>
+  </form>
+</body>
+</html>
